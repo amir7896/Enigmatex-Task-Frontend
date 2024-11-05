@@ -12,6 +12,7 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 import { BoldTableCell } from "./style";
 import { ProductForm } from "./components";
@@ -21,6 +22,8 @@ const Products = () => {
   const [groupedProducts, setGroupedProducts] = useState({});
   const [open, setOpen] = useState(false);
   const [product, setProduct] = useState(null);
+
+  const navigate = useNavigate();
 
   // Fetch data from the API
   const fetchProducts = async () => {
@@ -59,11 +62,14 @@ const Products = () => {
     setOpen(true);
   };
 
+  const handleBack = () => {
+    navigate("/");
+  };
   return (
     <Box p={3}>
       {/* Top Buttons */}
       <Box display="flex" justifyContent="space-between" mb={2}>
-        <Button variant="contained" color="primary">
+        <Button variant="contained" color="primary" onClick={handleBack}>
           Back
         </Button>
         <Button
