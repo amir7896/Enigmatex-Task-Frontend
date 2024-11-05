@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Button, Typography } from "@mui/material";
+import { Button, Typography, Box } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 import TasksApi from "../../services/apis/Tasks.Api";
 import { useStates } from "../../hooks/useStates";
@@ -21,6 +22,7 @@ const Tasks = () => {
   } = useStates();
   const [taskId, setTaskId] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
+  const navigate = useNavigate();
 
   // Open dialog
   const open = () => {
@@ -58,17 +60,38 @@ const Tasks = () => {
     setDeleteId(id);
   };
 
+  // Handle products page navigate
+  const handleNavigate = () => {
+    navigate("/products");
+  };
+
   return (
-    <>
-      <Button sx={{ m: 2 }} variant="contained" color="primary" onClick={open}>
-        Add New Task
-      </Button>
+    <Box sx={{ mx: 2, my: 3 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+        <Button
+          sx={{ m: 2 }}
+          variant="contained"
+          color="primary"
+          onClick={open}
+        >
+          Add New Task
+        </Button>
+
+        <Button
+          sx={{ m: 2 }}
+          variant="contained"
+          color="info"
+          onClick={handleNavigate}
+        >
+          Products
+        </Button>
+      </Box>
 
       {/* Tasks List */}
-      <Grid container spacing={2} sx={{ mx: 2 }}>
+      <Grid container spacing={2}>
         {tasks &&
-          tasks?.map((dt) => (
-            <Grid item md="4" xs="6">
+          tasks.map((dt) => (
+            <Grid item md={4} xs={6} key={dt._id}>
               <Card sx={{ minWidth: 275 }}>
                 <CardContent>
                   <Typography variant="h5" component="div">
@@ -80,7 +103,7 @@ const Tasks = () => {
                   <Button
                     size="small"
                     variant="contained"
-                    color="danger"
+                    color="error"
                     onClick={() => handleDeleteOpen(dt?._id)}
                   >
                     Delete
@@ -115,7 +138,7 @@ const Tasks = () => {
         setOpen={setConfirmOpen}
         onConfirm={handleDelete}
       />
-    </>
+    </Box>
   );
 };
 
