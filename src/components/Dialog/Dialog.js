@@ -5,12 +5,11 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Box,
+  Input,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
-
-import Box from "@mui/material/Box";
-import Input from "@mui/material/Input";
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
 import { toast } from "react-toastify";
 
 import { useStates } from "../../hooks/useStates";
@@ -29,10 +28,10 @@ const CommonDialog = ({ title, taskId, setTaskId, getTasks }) => {
   };
 
   // Handle submit for add and update
-  const handleSubmit = async () => {
-    // Update Task
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
     if (taskId !== null) {
-      console.log("Update is called:");
       const response = await TasksApi.updateTask({ title: taskTitle }, taskId);
       if (response.success) {
         toast.success(response.message);
@@ -64,29 +63,40 @@ const CommonDialog = ({ title, taskId, setTaskId, getTasks }) => {
   }, [taskId]);
 
   return (
-    <Dialog open={openDialog}>
+    <Dialog open={openDialog} onClose={handleClose}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <Box sx={{ "& > :not(style)": { m: 1 } }}>
-          <FormControl variant="standard">
-            <InputLabel htmlFor="input-with-icon-adornment">Title</InputLabel>
-            <Input
-              id="input-with-icon-adornment"
-              name="title"
-              value={taskTitle}
-              onChange={(e) => setTaskTitle(e.target.value)}
-            />
-          </FormControl>
+          <form onSubmit={handleSubmit}>
+            <FormControl variant="standard" fullWidth>
+              <InputLabel htmlFor="input-with-icon-adornment">Title</InputLabel>
+              <Input
+                id="input-with-icon-adornment"
+                name="title"
+                value={taskTitle}
+                onChange={(e) => setTaskTitle(e.target.value)}
+              />
+            </FormControl>
+            <DialogActions sx={{ mt: 2, mx: -1 }}>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleClose}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={!taskTitle}
+              >
+                Submit
+              </Button>
+            </DialogActions>
+          </form>
         </Box>
       </DialogContent>
-      <DialogActions>
-        <Button variant="contained" color="secondary" onClick={handleClose}>
-          Cancel
-        </Button>
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
-          Submit
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };
